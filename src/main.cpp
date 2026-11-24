@@ -44,7 +44,13 @@ void movement(bool left,bool right){
         paddleX =WINDOW_WIDTH -PADDLE_WIDTH;  //Right side Limit 
     }
 }
-
+//To follow ball the paddle before launching
+void updatewaitball(){
+    if(!launched){
+        ballX =paddleX+(PADDLE_WIDTH -BALL_SIZE);
+        ballY =paddleY -BALL_SIZE;
+    }
+}
 void loadLevel()
 {
     ifstream fin("level.txt");
