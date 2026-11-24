@@ -63,8 +63,8 @@ void launchball(){
 // to Draw the the shape of paddle;
 void drawPaddle(sf::RenderWindow& window)
 {
-    sf::RectangleShape paddle(sf:: Vectore2f(PADDLE_WIDTH,PADDLE_HEIGHT));
-    paddle.setPosition(sf::Vectore2f(static_cast<float>(paddleX),static_cast<float>paddleY));
+    sf::RectangleShape paddle(sf:: Vector2f(PADDLE_WIDTH,PADDLE_HEIGHT));
+    paddle.setPosition(sf::Vector2f(static_cast<float>(paddleX),static_cast<float>(paddleY)));
     paddle.setFillColor(sf::Color::White);
     window.draw(paddle);
 
@@ -72,8 +72,8 @@ void drawPaddle(sf::RenderWindow& window)
 // To draw the shape of a ball
 void drawBall(sf::RenderWindow& window){
     sf::CircleShape ball(6.f);
-    ball.setPosition(sf::Vectore2f(static_cast<float>(ballX),static_cast<float>(ballY)));
-    ball.setFillColor(sf::color::White);
+    ball.setPosition(sf::Vector2f(static_cast<float>(ballX),static_cast<float>(ballY)));
+    ball.setFillColor(sf::Color::White);
     window.draw(ball);
 }
 void loadLevel()
@@ -184,6 +184,5 @@ int main()
         updateGame();
         drawGame(window);
     }
- return -1;
     return 0;
 }
