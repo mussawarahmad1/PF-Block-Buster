@@ -133,10 +133,19 @@ void handleInput(sf::RenderWindow& window)
             window.close();
     }
 }
-
+//
 void updateGame()
 {
-
+    bool left =sf::Keyboard::isKeyPressed(sf::Keyboard::Key::left)|| sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A);
+    bool right =sf::Keyboard::isKeyPressed(sf::Keyboard::Key::right)|| sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D);
+    //Left or Right movement of the paddle
+    movement(left,right);
+     
+    //if space is pressed to Launch the ball
+    updatewaitball();
+    if(sf::Keyboard::isKeyPressed(sf::Key::Space)){
+        launchball();
+    }
 }
 
 void drawGame(sf::RenderWindow& window)
