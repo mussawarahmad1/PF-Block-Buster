@@ -161,6 +161,8 @@ void drawGame(sf::RenderWindow& window)
     else
     {
         drawBricks(window);
+        drawPaddle(window);
+        drawBall(window);
     }
 
     window.display();
