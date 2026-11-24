@@ -1,5 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <fstream>
+#include<cstdlib>
+#include<ctime>
 using namespace std;
 
 const unsigned int WINDOW_WIDTH = 600;
@@ -49,6 +51,13 @@ void updatewaitball(){
     if(!launched){
         ballX =paddleX+(PADDLE_WIDTH -BALL_SIZE);
         ballY =paddleY -BALL_SIZE;
+    }
+}
+void launchball(){
+    if(!launched){
+        launched =true;
+        dx =(rand()%2 ==0) ? -3 :3 ; // it will assign randomly -3 or 3 so that the ball move randomly left or right;
+        dy =-5;
     }
 }
 void loadLevel()
