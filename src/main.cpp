@@ -49,7 +49,7 @@ void movement(bool left,bool right){
 //To follow ball the paddle before launching
 void updatewaitball(){
     if(!launched){
-        ballX =paddleX+(PADDLE_WIDTH -BALL_SIZE);
+        ballX =paddleX+(PADDLE_WIDTH -BALL_SIZE)/2;
         ballY =paddleY -BALL_SIZE;
     }
 }
@@ -61,19 +61,19 @@ void launchball(){
     }
 }
 // to Draw the the shape of paddle;
-void drawpaddle(sf::Renderwindow& window)
+void drawPaddle(sf::RenderWindow& window)
 {
     sf::RectangleShape paddle(sf:: Vectore2f(PADDLE_WIDTH,PADDLE_HEIGHT));
-    paddle.setPosition(sf::Vector2f(static_cast<float>(paddleX),static_cast<float>paddleY));
-    paddle.setFillColor(sf::Color::white);
+    paddle.setPosition(sf::Vectore2f(static_cast<float>(paddleX),static_cast<float>paddleY));
+    paddle.setFillColor(sf::Color::White);
     window.draw(paddle);
 
 }
 // To draw the shape of a ball
-void drawBall(sf::Renderwindow& window){
+void drawBall(sf::RenderWindow& window){
     sf::CircleShape ball(6.f);
-    ball.setPosition(sf::Vector2f(static_cast<float>(ballX),static_cast<float>(ballY)));
-    ball.setFillColor(sf::color::white);
+    ball.setPosition(sf::Vectore2f(static_cast<float>(ballX),static_cast<float>(ballY)));
+    ball.setFillColor(sf::color::White);
     window.draw(ball);
 }
 void loadLevel()
@@ -136,14 +136,14 @@ void handleInput(sf::RenderWindow& window)
 //
 void updateGame()
 {
-    bool left =sf::Keyboard::isKeyPressed(sf::Keyboard::Key::left)|| sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A);
-    bool right =sf::Keyboard::isKeyPressed(sf::Keyboard::Key::right)|| sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D);
+    bool left =sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)|| sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A);
+    bool right =sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)|| sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D);
     //Left or Right movement of the paddle
     movement(left,right);
      
     //if space is pressed to Launch the ball
     updatewaitball();
-    if(sf::Keyboard::isKeyPressed(sf::Key::Space)){
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)){
         launchball();
     }
 }
@@ -176,7 +176,7 @@ int main()
     font.openFromFile("C:/Windows/Fonts/arial.ttf");
 
     loadLevel();
-    srand(staric_cast<unsigned int>(time(nullptr)));
+    srand(static_cast<unsigned int>(time(nullptr)));
 
     while (window.isOpen())
     {
