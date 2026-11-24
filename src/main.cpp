@@ -60,6 +60,22 @@ void launchball(){
         dy =-5;
     }
 }
+// to Draw the the shape of paddle;
+void drawpaddle(sf::Renderwindow& window)
+{
+    sf::RectangleShape paddle(sf:: Vectore2f(PADDLE_WIDTH,PADDLE_HEIGHT));
+    paddle.setPosition(sf::Vector2f(static_cast<float>(paddleX),static_cast<float>paddleY));
+    paddle.setFillColor(sf::Color::white);
+    window.draw(paddle);
+
+}
+// To draw the shape of a ball
+void drawBall(sf::Renderwindow& window){
+    sf::CircleShape ball(6.f);
+    ball.setPosition(sf::Vector2f(static_cast<float>(ballX),static_cast<float>(ballY)));
+    ball.setFillColor(sf::color::white);
+    window.draw(ball);
+}
 void loadLevel()
 {
     ifstream fin("level.txt");
@@ -149,6 +165,7 @@ int main()
     font.openFromFile("C:/Windows/Fonts/arial.ttf");
 
     loadLevel();
+    srand(staric_cast<unsigned int>(time(nullptr)));
 
     while (window.isOpen())
     {
