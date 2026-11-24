@@ -30,6 +30,21 @@ int bricks[ROWS][COLS];
 bool levelMissing = false;
 sf::Font font;
 
+void movement(bool left,bool right){
+    if(left){
+        paddleX -=PADDLE_SPEED;
+    }
+    if(right){
+        paddleX +=PADDLE_SPEED;
+    }
+    if(paddleX <0){
+        paddleX =0; //left side window limit
+    }
+    if(paddleX>WINDOW_WIDTH-PADDLE_WIDTH){
+        paddleX =WINDOW_WIDTH -PADDLE_WIDTH;  //Right side Limit 
+    }
+}
+
 void loadLevel()
 {
     ifstream fin("level.txt");
