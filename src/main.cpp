@@ -5,6 +5,21 @@ using namespace std;
 const unsigned int WINDOW_WIDTH = 600;
 const unsigned int WINDOW_HEIGHT = 700;
 
+const int PADDLE_WIDTH=100;
+const int PADDLE_HEIGHT=14;
+const int PADDLE_SPEED =8;
+
+int paddleX= 250;
+int paddleY=650;
+
+const int BALL_SIZE =12;
+int ballX = paddleX +(PADDLE_WIDTH-BALL_SIZE)/2;
+int ballY=paddleY - BALL_SIZE;
+
+bool launched =false;
+int dx=0;
+int dy =0;
+
 const int ROWS = 8;
 const int COLS = 10;
 const float BRICK_W = 60.f;
@@ -75,6 +90,7 @@ void handleInput(sf::RenderWindow& window)
 
 void updateGame()
 {
+
 }
 
 void drawGame(sf::RenderWindow& window)
@@ -110,6 +126,6 @@ int main()
         updateGame();
         drawGame(window);
     }
-
+ return -1;
     return 0;
 }
