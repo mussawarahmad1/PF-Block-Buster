@@ -125,6 +125,41 @@ void updateGame()
         ballX = paddleX + 44.f;
         ballY = 638.f;
     }
+    else {
+        // move x and y step by step and bounce off walls
+        float prevX = ballX;
+        ballX += dx;
+        if (ballX < 0.f || ballX + BALL_RADIUS * 2.f > WINDOW_WIDTH)
+        {
+            ballX = prevX;
+            dx = -dx;
+        }
+        float prevY = ballY;
+        ballY += dy;
+        if (ballY < 50.f)
+        {
+            ballY = prevY;
+            dy = -dy;
+        }
+        // bounce only when moving down onto the paddle
+        float ballSize = BALL_RADIUS * 2.f;
+        bool overlapX = (ballX < paddleX + PADDLE_W) && (ballX + ballSize > paddleX);
+        bool overlapY = (ballY < PADDLE_Y + PADDLE_H) && (ballY + ballSize > PADDLE_Y);
+
+        if (dy > 0 && overlapX && overlapY)
+        {
+            ballY = 638.f;
+            dy = -5;
+            float ballCenterX = ballX + BALL_RADIUS;
+            int part = (int)((ballCenterX - paddleX) * 4.f / PADDLE_W);
+            if (part < 0) part = 0;
+            if (part > 3) part = 3;
+            if (part == 0) dx = -6;
+            else if (part == 1) dx = -3;
+            else if (part == 2) dx = 3;
+            else dx = 6;
+        }
+    }
 }
 
 void drawGame(sf::RenderWindow& window)
