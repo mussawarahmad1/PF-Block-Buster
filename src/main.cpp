@@ -1,7 +1,4 @@
 
-
-
-
 #include <SFML/Graphics.hpp>
 #include <fstream>
 #include <cstdlib>
@@ -22,7 +19,9 @@ int bricks[ROWS][COLS];
 
 bool levelMissing = false;
 sf::Font font;
-int score = 0; // added scoring variiable
+//scroing variable
+int score = 0;
+
 // Paddle variables
 const int PADDLE_WIDTH = 100;
 const int PADDLE_HEIGHT = 14;
@@ -74,12 +73,15 @@ void updatewaitball()
 // Launch ball
 void launchball()
 {
-    if (!launched)
-    {
+    
+    
         launched = true;
-        dx = (rand() % 2 == 0) ? -3 : 3;
+        if (rand() % 2 == 0) {
+            dx = 3;
+        else
+            dx = -3;
         dy = -5;
-    }
+    
 }
 
 
@@ -164,7 +166,9 @@ void drawBricks(sf::RenderWindow& window)
             if (bricks[r][c] != 0)
             {
                 brick.setFillColor(colors[bricks[r][c]]);
+
                 brick.setPosition({ c * BRICK_W + 1,BRICKS_Y + r * BRICK_H + 1});
+
                 window.draw(brick);
             }
         }
@@ -177,14 +181,31 @@ float getBrickX(int col)
 {
     return col * BRICK_W;
 }
+
 float getBrickY(int row)
 {
     return BRICKS_Y + row * BRICK_H;
 }
+//to Check how Much brick are present
+int countBricks() {
+    int total = 0;
+    for (int row = 0;row < ROWS;row++) {
+        for (int col = 0;col < COLS;col++) {
+            if(bricks[row][col]>0){
+                total++;
+            }
+        }
+    }
+    return total;
+}
+
+
+// Check brick collision
+
 bool checkBrickCollision(bool alreadyHit[ROWS][COLS])
 {
     // Four corners of the ball
-    int cornerX[4] = { ballX,ballX + BALL_SIZE - 1,ballX,ballX + BALL_SIZE - 1 };
+    int cornerX[4] = {ballX,ballX + BALL_SIZE - 1,ballX,ballX + BALL_SIZE - 1};
     int cornerY[4] = { ballY,ballY, ballY + BALL_SIZE - 1,ballY + BALL_SIZE - 1 };
     bool touchedBrick = false;
     for (int i = 0; i < 4; i++)
@@ -193,13 +214,13 @@ bool checkBrickCollision(bool alreadyHit[ROWS][COLS])
         int cy = cornerY[i];
 
         // Make sure corner is inside the brick area
-        if (cy >= BRICKS_Y && cy < BRICKS_Y + ROWS * BRICK_H && cx >= 0 && cx < COLS * BRICK_W)
+        if (cy >= BRICKS_Y &&cy < BRICKS_Y + ROWS * BRICK_H &&cx >= 0 &&cx < COLS * BRICK_W)
         {
             // Calculatee bricks Positiion in the array
             int row = (cy - (int)BRICKS_Y) / (int)BRICK_H;
             int col = cx / (int)BRICK_W;
-            if (bricks[row][col] > 0 &&
-                !alreadyHit[row][col]) {
+            if (bricks[row][col] > 0 && !alreadyHit[row][col])
+            {
                 alreadyHit[row][col] = true;
                 bricks[row][col]--;// Reduce brick durabilit
                 if (bricks[row][col] == 0)// Increase score
@@ -217,6 +238,7 @@ bool checkBrickCollision(bool alreadyHit[ROWS][COLS])
 
 
 
+
 // Handle window events
 void handleInput(sf::RenderWindow& window)
 {
@@ -228,6 +250,8 @@ void handleInput(sf::RenderWindow& window)
         }
     }
 }
+
+
 // Update game
 void updateGame()
 {
@@ -235,88 +259,97 @@ void updateGame()
     bool left =
         sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left) ||
         sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A);
+
     bool right =
         sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right) ||
         sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D);
+
     movement(left, right);
+
     // 2. Keep ball on paddle
     updatewaitball();
+
     // 3. Launch ball
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
     {
         launchball();
     }
+
     // 4. Move ball after launching
     if (launched)
-    {// Brick collision
+
+    {
         bool alreadyHit[ROWS][COLS] = {};
-        // Horizontal movement
+        //mOVE hORIZONTALLY 
         int oldX = ballX;
         ballX += dx;
-        if (checkBrickCollision(alreadyHit))
-        {
+        if (checkBrickCollision(alreadyHit)) {
             ballX = oldX;
             dx = -dx;
         }
-        // Vertical movement
+        ///move vertically;
         int oldY = ballY;
         ballY += dy;
-        if (checkBrickCollision(alreadyHit))
-        {
+        if (checkBrickCollision(alreadyHit)) {
             ballY = oldY;
             dy = -dy;
         }
+
         // Left and right wall collision
-        // Left wall
-        if (ballX < 0)
+        if (ballX < 0 || ballX + BALL_SIZE > WINDOW_WIDTH)
         {
-            ballX = 0;
             dx = -dx;
         }
 
-        // Right wall
-        if (ballX + BALL_SIZE > WINDOW_WIDTH)
-        {
-            ballX = WINDOW_WIDTH - BALL_SIZE;
-            dx = -dx;
-        }
-        // Top wall
+        // Top wall collision
         if (ballY < 50)
         {
-            ballY = 50;
             dy = -dy;
         }
-      
+
         // Paddle collision
         bool overlapX =
             (ballX < paddleX + PADDLE_WIDTH) &&
             (ballX + BALL_SIZE > paddleX);
+
         bool overlapY =
             (ballY < paddleY + PADDLE_HEIGHT) &&
             (ballY + BALL_SIZE > paddleY);
+
         if (dy > 0 && overlapX && overlapY)
         {
             ballY = paddleY - BALL_SIZE;
             dy = -5;
+
             float ballCenterX = ballX + BALL_SIZE / 2.0f;
-            int part = static_cast<int>((ballCenterX - paddleX) * 4.0f / PADDLE_WIDTH);
+
+            int part = static_cast<int>(
+                (ballCenterX - paddleX) * 4.0f / PADDLE_WIDTH
+                );
+
             if (part < 0) part = 0;
             if (part > 3) part = 3;
+
             if (part == 0) dx = -6;
             else if (part == 1) dx = -3;
             else if (part == 2) dx = 3;
             else dx = 6;
         }
 
+    
     }
 }
+
+
 // Draw complete game
 void drawGame(sf::RenderWindow& window)
 {
     window.clear(sf::Color(15, 15, 40));
+
     if (levelMissing)
     {
         sf::Text message(font, "Error: level.txt not found", 24);
+
         message.setPosition({ 100.f, 300.f });
         window.draw(message);
     }
