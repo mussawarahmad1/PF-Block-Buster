@@ -21,6 +21,7 @@ bool levelMissing = false;
 sf::Font font;
 //scroing variable
 int score = 0;
+int lives = 3;
 
 // Paddle variables
 const int PADDLE_WIDTH = 100;
@@ -125,9 +126,7 @@ void drawBall(sf::RenderWindow& window)
     ball.setPosition(
         sf::Vector2f(
             static_cast<float>(ballX),
-            static_cast<float>(ballY)
-        )
-    );
+            static_cast<float>(ballY)));
 
     ball.setFillColor(sf::Color::White);
     window.draw(ball);
@@ -282,8 +281,8 @@ void updateGame()
     // 2. Keep ball on paddle
     updatewaitball();
 
-    // 3. Launch ball
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+    // 3Launch ball
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)&& !launched)
     {
         launchball();
     }
@@ -309,10 +308,20 @@ void updateGame()
         }
 
         // Left and right wall collision
-        if (ballX < 0 || ballX + BALL_SIZE > WINDOW_WIDTH)
-        {
+        if (ballX < 0) {
+            ballX = 0;
+            dx = -dx;
+
+        }
+        if (ballX + BALL_SIZE > WINDOW_WIDTH) {
+            ballX = WINDOW_WIDTH - BALL_SIZE;
             dx = -dx;
         }
+        if (ballY < 50) {
+            ballY = 50;
+            dy = -dy;
+        }
+        
 
         // Top wall collision
         if (ballY < 50)
@@ -343,37 +352,27 @@ void updateGame()
             else if (ballCenterX < paddleX + 75)
                 part = 2;
             else
-                part = 2;
-
-
-
-            if (part == 0) dx = -6;
-            else if (part == 1) dx = -3;
-            else if (part == 2) dx = 3;
-            else dx = 6;
-        }
-        if (dy > 0 && overlapX && overlapY) {
-            ballY = paddleY - BALL_SIZE;
-            dy = -5;
-            float ballCenterX = ballX + BALL_SIZE / 2.0f;
-            int part = static_cast<int>((ballCenterX - paddleX) * 4.0f / PADDLE_WIDTH);
-            if (part < 0)
-                part = 0;
-            if (part > 3)
                 part = 3;
-            if (part == 0)
+
+
+
+            if (part == 0) 
                 dx = -6;
-            else if (part == 1)
+            else if (part == 1) 
                 dx = -3;
             else if (part == 2)
                 dx = 3;
-            else
-                dx = 6;
+            else dx = 6;
         }
+        
         //if Ball is missed
         if (ballY > WINDOW_HEIGHT) {
             lives--;
-            resetBall();
+            if (lives > 0) {
+                resetBall();
+
+            }
+            
         }
 
     
