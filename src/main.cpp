@@ -23,6 +23,13 @@ sf::Font font;
 int score = 0;
 int lives = 3;
 
+// Game states
+const int MENU = 0;
+const int PLAYING = 1;
+const int GAME_OVER = 2;
+
+int gameState = PLAYING;
+
 // Paddle variables
 const int PADDLE_WIDTH = 100;
 const int PADDLE_HEIGHT = 14;
@@ -260,6 +267,18 @@ void handleInput(sf::RenderWindow& window)
         {
             window.close();
         }
+        // keys for current state
+        switch (gameState)
+        {
+        case MENU:
+            break;
+
+        case PLAYING:
+            break;
+
+        case GAME_OVER:
+            break;
+        }
     }
 }
 
@@ -267,128 +286,149 @@ void handleInput(sf::RenderWindow& window)
 // Update game
 void updateGame()
 {
-    // 1. Paddle movement
-    bool left =
-        sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left) ||
-        sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A);
-
-    bool right =
-        sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right) ||
-        sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D);
-
-    movement(left, right);
-
-    // 2. Keep ball on paddle
-    updatewaitball();
-
-    // 3Launch ball
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)&& !launched)
+    // run logic for active state
+    switch (gameState)
     {
-        launchball();
-    }
+    case MENU:
+        break;
 
-    // 4. Move ball after launching
-    if (launched)
-
+    case PLAYING:
     {
-        bool alreadyHit[ROWS][COLS] = {};
-        //mOVE hORIZONTALLY 
-        int oldX = ballX;
-        ballX += dx;
-        if (checkBrickCollision(alreadyHit)) {
-            ballX = oldX;
-            dx = -dx;
-        }
-        ///move vertically;
-        int oldY = ballY;
-        ballY += dy;
-        if (checkBrickCollision(alreadyHit)) {
-            ballY = oldY;
-            dy = -dy;
-        }
+        // 1. Paddle movement
+        bool left =
+            sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left) ||
+            sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A);
 
-        // Left and right wall collision
-        if (ballX < 0) {
-            ballX = 0;
-            dx = -dx;
+        bool right =
+            sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right) ||
+            sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D);
 
-        }
-        if (ballX + BALL_SIZE > WINDOW_WIDTH) {
-            ballX = WINDOW_WIDTH - BALL_SIZE;
-            dx = -dx;
-        }
-        // Top wall collision
-        if (ballY < 50)
+        movement(left, right);
+
+        // 2. Keep ball on paddle
+        updatewaitball();
+
+        // 3Launch ball
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space) && !launched)
         {
-            dy = -dy;
+            launchball();
         }
 
-        // Paddle collision
-        bool overlapX =
-            (ballX < paddleX + PADDLE_WIDTH) &&
-            (ballX + BALL_SIZE > paddleX);
+        // 4. Move ball after launching
+        if (launched)
 
-        bool overlapY =
-            (ballY < paddleY + PADDLE_HEIGHT) &&
-            (ballY + BALL_SIZE > paddleY);
-
-        if (dy > 0 && overlapX && overlapY)
         {
-            ballY = paddleY - BALL_SIZE;
-            dy = -5;
+            bool alreadyHit[ROWS][COLS] = {};
+            //mOVE hORIZONTALLY 
+            int oldX = ballX;
+            ballX += dx;
+            if (checkBrickCollision(alreadyHit)) {
+                ballX = oldX;
+                dx = -dx;
+            }
+            ///move vertically;
+            int oldY = ballY;
+            ballY += dy;
+            if (checkBrickCollision(alreadyHit)) {
+                ballY = oldY;
+                dy = -dy;
+            }
 
-            int ballCenterX = ballX + BALL_SIZE / 2;
-            int partWidth = PADDLE_WIDTH / 4;
-            int part = (ballCenterX - paddleX) / partWidth;
-
-            if (part < 0) part = 0;
-            if (part > 3) part = 3;
-
-            if (part == 0) 
-                dx = -6;
-            else if (part == 1) 
-                dx = -3;
-            else if (part == 2)
-                dx = 3;
-            else dx = 6;
-        }
-        
-        //if Ball is missed
-        if (ballY > WINDOW_HEIGHT) {
-            lives--;
-            if (lives > 0) {
-                resetBall();
+            // Left and right wall collision
+            if (ballX < 0) {
+                ballX = 0;
+                dx = -dx;
 
             }
-            
+            if (ballX + BALL_SIZE > WINDOW_WIDTH) {
+                ballX = WINDOW_WIDTH - BALL_SIZE;
+                dx = -dx;
+            }
+            // Top wall collision
+            if (ballY < 50)
+            {
+                dy = -dy;
+            }
+
+            // Paddle collision
+            bool overlapX =
+                (ballX < paddleX + PADDLE_WIDTH) &&
+                (ballX + BALL_SIZE > paddleX);
+
+            bool overlapY =
+                (ballY < paddleY + PADDLE_HEIGHT) &&
+                (ballY + BALL_SIZE > paddleY);
+
+            if (dy > 0 && overlapX && overlapY)
+            {
+                ballY = paddleY - BALL_SIZE;
+                dy = -5;
+
+                int ballCenterX = ballX + BALL_SIZE / 2;
+                int partWidth = PADDLE_WIDTH / 4;
+                int part = (ballCenterX - paddleX) / partWidth;
+
+                if (part < 0) part = 0;
+                if (part > 3) part = 3;
+
+                if (part == 0)
+                    dx = -6;
+                else if (part == 1)
+                    dx = -3;
+                else if (part == 2)
+                    dx = 3;
+                else dx = 6;
+            }
+
+            //if Ball is missed
+            if (ballY > WINDOW_HEIGHT)
+            {
+                lives--;
+                if (lives > 0)
+                {
+                    resetBall();
+                }
+            }
+        }
+        break;
+    }
+    case GAME_OVER:
+        break;
+    }
+}
+   
+    // draw complete game
+    void drawGame(sf::RenderWindow& window)
+    {
+        window.clear(sf::Color(15, 15, 40));
+
+        if (levelMissing)
+        {
+            sf::Text message(font, "Error: level.txt not found", 24);
+            message.setPosition({ 100.f, 300.f });
+            window.draw(message);
+        }
+        else
+        {
+            // draw current state
+            switch (gameState)
+            {
+            case MENU:
+                break;
+
+            case PLAYING:
+                drawBricks(window);
+                drawPaddle(window);
+                drawBall(window);
+                break;
+
+            case GAME_OVER:
+                break;
+            }
         }
 
-    
+        window.display();
     }
-}
-
-
-// Draw complete game
-void drawGame(sf::RenderWindow& window)
-{
-    window.clear(sf::Color(15, 15, 40));
-
-    if (levelMissing)
-    {
-        sf::Text message(font, "Error: level.txt not found", 24);
-
-        message.setPosition({ 100.f, 300.f });
-        window.draw(message);
-    }
-    else
-    {
-        drawBricks(window);
-        drawPaddle(window);
-        drawBall(window);
-    }
-
-    window.display();
-}
 
 
 // Main function
