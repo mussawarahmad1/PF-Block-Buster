@@ -317,12 +317,6 @@ void updateGame()
             ballX = WINDOW_WIDTH - BALL_SIZE;
             dx = -dx;
         }
-        if (ballY < 50) {
-            ballY = 50;
-            dy = -dy;
-        }
-        
-
         // Top wall collision
         if (ballY < 50)
         {
@@ -344,17 +338,11 @@ void updateGame()
             dy = -5;
 
             int ballCenterX = ballX + BALL_SIZE / 2;
-            int part;
-            if (ballCenterX < paddleX + 25)
-                part = 0;
-            else if (ballCenterX < paddleX + 50)
-                part = 1;
-            else if (ballCenterX < paddleX + 75)
-                part = 2;
-            else
-                part = 3;
+            int partWidth = PADDLE_WIDTH / 4;
+            int part = (ballCenterX - paddleX) / partWidth;
 
-
+            if (part < 0) part = 0;
+            if (part > 3) part = 3;
 
             if (part == 0) 
                 dx = -6;
