@@ -68,6 +68,16 @@ void updatewaitball()
         ballY = paddleY - BALL_SIZE;
     }
 }
+//ResetBall after falling below
+void resetBall() {
+    launched = false;
+    
+    dx = 0;
+    dy = 0;
+    ballX = paddleX + (PADDLE_WIDTH - BALL_SIZE) / 2;
+    ballY = paddleY - BALL_SIZE;
+
+}
 
 
 // Launch ball
@@ -78,8 +88,11 @@ void launchball()
         launched = true;
         if (rand() % 2 == 0) {
             dx = 3;
-        else
+        }
+        else {
             dx = -3;
+        }
+            
         dy = -5;
     
 }
@@ -321,19 +334,46 @@ void updateGame()
             ballY = paddleY - BALL_SIZE;
             dy = -5;
 
-            float ballCenterX = ballX + BALL_SIZE / 2.0f;
+            int ballCenterX = ballX + BALL_SIZE / 2;
+            int part;
+            if (ballCenterX < paddleX + 25)
+                part = 0;
+            else if (ballCenterX < paddleX + 50)
+                part = 1;
+            else if (ballCenterX < paddleX + 75)
+                part = 2;
+            else
+                part = 2;
 
-            int part = static_cast<int>(
-                (ballCenterX - paddleX) * 4.0f / PADDLE_WIDTH
-                );
 
-            if (part < 0) part = 0;
-            if (part > 3) part = 3;
 
             if (part == 0) dx = -6;
             else if (part == 1) dx = -3;
             else if (part == 2) dx = 3;
             else dx = 6;
+        }
+        if (dy > 0 && overlapX && overlapY) {
+            ballY = paddleY - BALL_SIZE;
+            dy = -5;
+            float ballCenterX = ballX + BALL_SIZE / 2.0f;
+            int part = static_cast<int>((ballCenterX - paddleX) * 4.0f / PADDLE_WIDTH);
+            if (part < 0)
+                part = 0;
+            if (part > 3)
+                part = 3;
+            if (part == 0)
+                dx = -6;
+            else if (part == 1)
+                dx = -3;
+            else if (part == 2)
+                dx = 3;
+            else
+                dx = 6;
+        }
+        //if Ball is missed
+        if (ballY > WINDOW_HEIGHT) {
+            lives--;
+            resetBall();
         }
 
     
