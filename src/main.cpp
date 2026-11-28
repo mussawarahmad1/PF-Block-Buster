@@ -3,6 +3,7 @@
 #include <fstream>
 #include <cstdlib>
 #include <ctime>
+#include <string>
 using namespace std;
 
 const unsigned int WINDOW_WIDTH = 600;
@@ -305,6 +306,13 @@ void handleInput(sf::RenderWindow& window)
             break;
 
         case GAME_OVER:
+            if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
+            {
+                if (keyPressed->code == sf::Keyboard::Key::Enter)
+                {
+                    gameState = MENU;
+                }
+            }
             break;
         }
     }
@@ -417,6 +425,12 @@ void updateGame()
                     resetBall();
                 }
             }
+            // Check win or loss condition
+            if (lives <= 0 || countBricks() == 0)
+            {
+                resetBall();
+                gameState = GAME_OVER;
+            }
         }
         break;
     }
@@ -468,6 +482,21 @@ void updateGame()
                 break;
 
             case GAME_OVER:
+            {
+                string heading = (countBricks() == 0) ? "YOU WIN" : "GAME OVER";
+
+                sf::Text resultText(font, heading, 36);
+                resultText.setPosition({ 175.f, 180.f });
+                window.draw(resultText);
+
+                sf::Text scoreText(font, "Score: " + to_string(score), 24);
+                scoreText.setPosition({ 215.f, 250.f });
+                window.draw(scoreText);
+
+                sf::Text enterText(font, "Press Enter", 22);
+                enterText.setPosition({ 220.f, 320.f });
+                window.draw(enterText);
+            }
                 break;
             }
         }
