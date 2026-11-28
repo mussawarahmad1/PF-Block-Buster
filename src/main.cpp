@@ -28,7 +28,7 @@ const int MENU = 0;
 const int PLAYING = 1;
 const int GAME_OVER = 2;
 
-int gameState = PLAYING;
+int gameState = MENU;
 
 // Paddle variables
 const int PADDLE_WIDTH = 100;
@@ -49,6 +49,7 @@ bool launched = false;
 int dx = 0;
 int dy = 0;
 
+void loadLevel();
 
 // Paddle movement
 void movement(bool left, bool right)
@@ -87,13 +88,22 @@ void resetBall() {
 
 }
 
+// reset everything for a new game
+void resetGame()
+{
+    score = 0;
+    lives = 3;
+    levelMissing = false;
+    paddleX = (WINDOW_WIDTH - PADDLE_WIDTH) / 2;
+    paddleY = 650;
+    resetBall();
+    loadLevel();
+}
 
 // Launch ball
 void launchball()
 {
-    
-    
-        launched = true;
+    launched = true;
         if (rand() % 2 == 0) {
             dx = 3;
         }
@@ -271,6 +281,24 @@ void handleInput(sf::RenderWindow& window)
         switch (gameState)
         {
         case MENU:
+            if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
+            {
+                if (keyPressed->code == sf::Keyboard::Key::Num1 ||
+                    keyPressed->code == sf::Keyboard::Key::Enter)
+                {
+                    resetGame();
+                    gameState = PLAYING;
+                }
+                else if (keyPressed->code == sf::Keyboard::Key::Num2)
+                {
+                    gameState = PLAYING;
+                }
+                else if (keyPressed->code == sf::Keyboard::Key::Num3 ||
+                    keyPressed->code == sf::Keyboard::Key::Escape)
+                {
+                    window.close();
+                }
+            }
             break;
 
         case PLAYING:
@@ -414,6 +442,23 @@ void updateGame()
             switch (gameState)
             {
             case MENU:
+            {
+                sf::Text title(font, "BLOCK BUSTER", 36);
+                title.setPosition({ 160.f, 160.f });
+                window.draw(title);
+
+                sf::Text opt1(font, "1. New Game", 24);
+                opt1.setPosition({ 200.f, 270.f });
+                window.draw(opt1);
+
+                sf::Text opt2(font, "2. Continue", 24);
+                opt2.setPosition({ 200.f, 320.f });
+                window.draw(opt2);
+
+                sf::Text opt3(font, "3. Exit", 24);
+                opt3.setPosition({ 200.f, 370.f });
+                window.draw(opt3);
+            }
                 break;
 
             case PLAYING:
